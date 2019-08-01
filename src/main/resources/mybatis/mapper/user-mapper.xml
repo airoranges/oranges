@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.staging.mapper.UserMapper">
+	<resultMap id="userResultMap" type="com.github.staging.entity.User">
+        <id property="uid" column="uid" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="username" column="username" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="password" column="password" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="salt" column="salt" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="email" column="email" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gender" column="gender" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        
+        <!--父类里的属性  -->
+        <result property="createUser" column="create_user" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="createdTime" column="created_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+		<result property="modifiedUser" column="modified_user" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result property="modifiedTime" column="modified_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <!-- 注册用户-->
+    <!-- Integer insertUser(User user) -->
+    <insert id="insertUser" parameterType="com.github.staging.entity.User" useGeneratedKeys="true" keyProperty="uid">
+		INSERT INTO 
+			user
+		(username,password,salt,is_delete,phone,email,gender,avatar,create_user,created_time,modified_user,modified_time) 
+		VALUES
+			(#{username},#{password},#{salt},#{isDelete},#{phone},#{email},#{gender},#{avatar},#{createUser},#{createdTime},
+			#{modifiedUser},#{modifiedTime})
+    </insert>
+    <!-- 检测用户在表中是否存在 -->
+    <!-- String selectUserByUsername(User user); -->
+    <select id="queryByUsername" parameterType="com.github.staging.entity.User" resultType="com.github.staging.entity.User">
+    	SELECT 
+    		uid,username,password,is_delete,salt,avatar 
+    	FROM
+    		user
+    	WHERE
+    		username=#{username}
+    </select>
+    <!-- 通过Id彻底删除一个用户 -->
+    <!-- Integer deleteById(User user); -->
+	<delete id="deleteById" parameterType="com.github.staging.entity.User">
+		DELETE FROM
+			user
+		WHERE 
+			uid=#{uid}
+	</delete>    
+    <!-- 通过Id假删除一个用户 -->
+    <!-- Integer updateById(User user); -->
+    <update id="updateById" parameterType="com.github.staging.entity.User">
+    	UPDATE 
+    		user SET is_delete=0
+		WHERE 
+			uid=#{uid}
+    </update>
+    <!-- 通过Id恢复假删除的用户 -->
+    <!-- Integer updateById(User user); -->
+    <!-- <update id="updateById" parameterType="com.github.staging.entity.User">
+    	UPDATE 
+    		user SET is_delete=1
+		WHERE 
+			uid=#{uid}
+    </update> -->
+    
+    <!-- 查询用户所有数据 key为uid-->
+    <!-- Map<Integer,Map<Integer,User>> selectAll(); -->
+    <select id="selectAll" resultMap="userResultMap">
+    	SELECT 
+    		uid,username,password,salt,is_delete,phone,email,gender,avatar,create_user,created_time,modified_user,modified_time
+    	FROM 
+    		user
+    </select>
+    
+    
+    
+    
+    
+    
+</mapper>
